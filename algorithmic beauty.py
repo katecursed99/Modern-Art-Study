@@ -1,8 +1,6 @@
 #pure plastic art
 #by Katherina "Kate the Cursed" Jesek
 
-#DEV BRANCH
-
 import drawsvg as draw
 import math
 import random
@@ -242,6 +240,28 @@ def chordal_lines():
                 steps+=1
                 render.append(chord_line)
 
+def tri_wave(startX,startY,iterations,period,amp,color,rot):
+    if rot == 90:
+        translationY = d_avg/2
+    else:
+        translationY = 0
+    tri_drawing = draw.Group(id='tri_wave')
+    amp = int(period//2)
+    x = [startX+x*period for x in range(int(iterations))]
+    y = [startY-amp,startY+amp]*int(iterations//2)
+    xy_flat = []
+    if rot == 90:
+        for x2,y2 in zip(y,x):
+            xy_flat.extend([x2,y2])
+    else:
+        for x2,y2 in zip(x,y):
+            xy_flat.extend([x2,y2])
+    new_line = draw.Lines(*xy_flat,stroke=color,stroke_width=stroke_small,fill='none')
+    
+    tri_drawing.append(new_line)
+    render.append(tri_drawing)
+    
+# ------------------
 
 d_width = 640 #Drawing space dimensions
 d_height = d_width/2*3 
@@ -276,6 +296,8 @@ while True: #Take your anti-crash-out pills, Python
             seq_max += seq_step
 
             quick_mode = True
+
+            input('Quick mode selected: hit enter to run')
             break
 
         overwrite = str(input('Overwrite? y/n (y = overwrite, n = append) '))
@@ -353,9 +375,19 @@ while True: #Second loop to actually execute
         mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
         mask1.append(drawing1)
         chordal_lines()
-        mondrian_straight(0,d_width,0,d_height,5,drawing2,d_width/8*random.randint(3,5),d_height/8*random.randint(3,5),color[2])
+        mondrian_straight(0,d_width,0,d_height,5,drawing2,
+                          d_width/8*random.randint(3,5),
+                          d_height/8*random.randint(3,5),color[2])
+
+
+        tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                 random.randint(5,8),d_avg/21,d_avg/13,color[1],90*random.randint(0,1))
+
+
         mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
-        mondrian_straight(0,d_width,0,d_height,6,drawing4,0,d_height/5*random.randint(0,5),color[4])
+        mondrian_straight(0,d_width,0,d_height,6,drawing4,
+                          0,d_height/5*random.randint(0,5),color[4])
+        
         
         
         
@@ -371,10 +403,15 @@ while True: #Second loop to actually execute
             else:
                 rect_sequence_hor(fibonacci(rect_fib),8)
 
-        draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),d_avg/8,render,0.618)
+        draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),
+                     d_avg/8,render,0.618)
 
+
+
+             
         
-        
+
+
         #White border
         render.append(rect_2)
         
