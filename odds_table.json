@@ -1,32 +1,32 @@
 [
     {
-        "id": 1,
-        "odds": "45",
+        "oid": 1,
+        "odds": "67",
         "name": "Chordal Lines"
     },
     {
-        "id": 2,
-        "odds": "45",
+        "oid": 2,
+        "odds": "54",
         "name": "Fibonacci Lines"
     },
     {
-        "id": 3,
-        "odds": "45",
+        "oid": 3,
+        "odds": "72",
         "name": "Tri-Wave"
     },
     {
-        "id": 4,
-        "odds": "45",
+        "oid": 4,
+        "odds": "78",
         "name": "Fibonacci Tri-Wave"
     },
     {
-        "id": 5,
-        "odds": "45",
+        "oid": 5,
+        "odds": "46",
         "name": "Chordal Tri-Wave"
     },
     {
-        "id": 6,
-        "odds": "45",
+        "oid": 6,
+        "odds": "90",
         "name": "Gradient Rects"
     }
 ]

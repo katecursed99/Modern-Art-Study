@@ -6,6 +6,18 @@ import math
 import random
 import json
 
+
+def import_table(filename): #Handles loading the JSON file with the odds
+    with open(filename, 'r') as odds_file:
+        odds_data = json.load(odds_file)
+        return odds_data
+
+def get_odds(num_id,odds_data): #Retrieves a percentage from the loaded odds table
+    for odds_dict in odds_data:
+        if odds_dict["oid"] == num_id:
+            return int(odds_dict["odds"])
+    
+
 def RGB(r,g,b): #DrawSVG library likes strings for some reason, so here's a
                 #compatibility function that lets us do color math
     red_ch = r
@@ -229,7 +241,7 @@ def chordal_lines(): #Lines with gaps based on chords
     chord = [0,3,7,10,12]
     chord_mod_list = [0,random.randint(-1,1),random.randint(-1,1),random.randint(-2,1),random.randint(0,3)]
     new_chord = []
-    chord_chance = 100
+    chord_chance = get_odds(1,odds_data)
     chord_roll = random.randint(0,100)
     chord_angle = random.randint(-1,1)*45
     if chord_roll <= chord_chance:
@@ -255,7 +267,7 @@ def chordal_lines(): #Lines with gaps based on chords
 
 def fibonacci_segments(u): #Lines with gaps based on fib sequence (like chordal lines)
     chord = [*fibonacci_list(u)]
-    chord_chance = 100
+    chord_chance = get_odds(2,odds_data)
     chord_roll = random.randint(0,100)
     chord_angle = random.randint(-1,1)*45
     if chord_roll <= chord_chance:
@@ -367,6 +379,8 @@ d_avg = (d_height+d_width)/2 #average of height and width
 stroke_small = d_avg / 192
 stroke_large = d_avg / 128
 
+import_table('preset_table.json')
+
 seq_min=0
 seq_max=0
 seq_step=0
@@ -389,8 +403,8 @@ while True: #Take your anti-crash-out pills, Python
             seq_min = 0
             seq_max = 250
             seq_step = 10
-            seq_max += seq_step
 
+            seq_max += seq_step
             quick_mode = True
 
             input('Quick mode selected: hit enter to run')
@@ -415,6 +429,10 @@ while True: #Take your anti-crash-out pills, Python
 
 
 seq_iterator = seq_min
+
+odds_data = import_table('odds_table.json')
+for i in range(1,7):
+    print(get_odds(i,odds_data))
 
 while True: #Second loop to actually execute
     try:
@@ -471,17 +489,25 @@ while True: #Second loop to actually execute
         mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
         mask1.append(drawing1)
         chordal_lines()
-        tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+
+        if random.randint(0,100) <= get_odds(4,odds_data):
+            tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                     random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+
+
         mondrian_straight(0,d_width,0,d_height,5,drawing2,
                           d_width/8*random.randint(3,5),
                           d_height/8*random.randint(3,5),color[2])
 
+        
+        if random.randint(0,100) <= get_odds(5,odds_data):
+        
+            tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                    random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
 
-        tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-        tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+        if random.randint(0,100) <= get_odds(3,odds_data):
+            tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                     random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
         
         mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
         fibonacci_segments(13)
@@ -493,7 +519,7 @@ while True: #Second loop to actually execute
         
         
         
-        rect_percent_chance = 25
+        rect_percent_chance = get_odds(6,odds_data)
         rect_roll = random.randint(0,100)
         rect_coin_flip = random.randint(0,1)
         rect_fib = random.randint(3,6)

@@ -1,0 +1,23 @@
+[
+    {
+        "filename": "n"
+    },
+    {
+        "overwrite": "n"
+    },
+    {
+        "output_mode": "1"
+    },
+    {
+        "seed": "1"
+    },
+    {
+        "seq_min": "0"
+    },
+    {
+        "seq_max": "100"
+    },
+    {
+        "seq_step": "1"
+    }
+]
