@@ -23,6 +23,17 @@ def fibonacci(user_input): #Creates a list of Fibonacci sequence and
     #print(fib_list) #debug print
     return fib_list[user_input]
 
+def fibonacci_list(user_input): #Creates a list of Fibonacci sequence and
+                            #returns the list itself
+    fib_list = [0, 1, 1]
+    for iterator in range(user_input+2):
+        if iterator > 1:
+            new_entry = fib_list[iterator]+fib_list[iterator-1]
+            fib_list.append(new_entry)
+    #print(fib_list) #debug print
+    del fib_list[0],fib_list[1]
+    return fib_list
+
 def fibonacci_ratio(user_input): #Creates a list of Fibonacci sequence and
                                     #returns the entries for n-2, n-1, n
     fib_list = [0, 1, 1]
@@ -119,7 +130,7 @@ def mondrian_lines(x1,x2,y1,y2,recursions,cnv,fill_pattern): #Call vertical
 def mondrian_angled(x1,x2,y1,y2,n,cnv,fill_pattern):
             
     mondrian_lines(x1,x2,y1,y2,n,cnv,fill_pattern)
-    render.append(draw.Use(cnv,0,0,transform='rotate(42.5),scale(1.75),translate('+str(0)+','+str(-d_height/2)+')')) #Print the secondary canvas to the main canvas
+    render.append(draw.Use(cnv,0,0,transform='rotate(45),scale(1.75),translate('+str(0)+','+str(-d_height/2)+')')) #Print the secondary canvas to the main canvas
 
 def mondrian_straight(x1,x2,y1,y2,n,cnv,posX,posY,fill_pattern):
     mondrian_lines(x1,x2,y1,y2,n,cnv,fill_pattern)
@@ -213,57 +224,141 @@ def rect_sequence_hor(n,f):
                      -d_avg/b,
                      0)
 
-def chordal_lines():
+def chordal_lines(): #Lines with gaps based on chords
     chord = [0,3,7,10,12]
     chord_mod_list = [0,random.randint(-1,1),random.randint(-1,1),random.randint(-2,1),random.randint(0,3)]
     new_chord = []
-    chord_chance = 32
+    chord_chance = 100
     chord_roll = random.randint(0,100)
-    chord_angle = random.randint(0,1)*42.5
+    chord_angle = random.randint(-1,1)*45
     if chord_roll <= chord_chance:
-        for octaves in range(1,5):
-            steps = 0
-            
+        for octaves in range(1,5): 
+            steps = 0 #Reset for each octave
+            y_value = d_avg/13*random.randint(3,8)
+            x_value = d_avg/21*random.randint(5,13)
             for i in chord:
-                j = i + chord_mod_list[steps]
+                j = i + chord_mod_list[steps] 
                 if steps >= 1:
-                    while j == new_chord[steps-1]:
+                    while j == new_chord[steps-1]: #Makes sure we don't overlap
                         j += 2
-                new_chord.append(i)
+                new_chord.append(j)
                 chord_line = draw.Line((
-                    d_avg/fibonacci(10)*j)+(d_avg/fibonacci(10)*(octaves*12)),
-                    d_avg/13*5,(d_avg/fibonacci(10)*j)+(d_avg/fibonacci(10)*
+                    x_value+d_avg/fibonacci(10)*j)+(d_avg/fibonacci(10)*(octaves*12)),
+                    y_value,x_value+(d_avg/fibonacci(10)*j)+(d_avg/fibonacci(10)*
                                                         (octaves*12)),
-                                       d_avg/13*3,stroke_width=stroke_large,
+                                       y_value+(d_avg/13),stroke_width=stroke_large,
                                        stroke=color[1],
                                        transform='rotate('+str(chord_angle)+')')
                 steps+=1
                 render.append(chord_line)
 
-def tri_wave(startX,startY,iterations,period,amp,color,rot):
-    if rot == 90:
-        translationY = d_avg/2
-    else:
-        translationY = 0
+def fibonacci_segments(u): #Lines with gaps based on fib sequence (like chordal lines)
+    chord = [*fibonacci_list(u)]
+    chord_chance = 100
+    chord_roll = random.randint(0,100)
+    chord_angle = random.randint(-1,1)*45
+    if chord_roll <= chord_chance:
+        steps = 0
+        y_value = d_avg/13*random.randint(3,8)
+        x_value = d_avg/21*random.randint(5,13)
+        for i in chord:
+            
+            chord_line = draw.Line(
+                x_value+((d_avg/fibonacci(16)*i)+(d_avg/fibonacci(16))),
+                y_value,x_value+((d_avg/fibonacci(16)*i)+(d_avg/fibonacci(16))),
+                                       y_value+d_avg/13,stroke_width=stroke_large,
+                                       stroke=color[1],
+                                       transform='rotate('+str(chord_angle)+')')
+            steps+=1
+            render.append(chord_line)
+
+def chord_seq():
+    chord = [0,3,7,10,12]
+    chord_mod_list = [0,random.randint(-1,1),random.randint(-1,1),random.randint(-2,1),random.randint(0,3)]
+    new_chord = []
+    c = 0
+    for note in chord:
+        new_note = note + chord_mod_list[c]
+        c+=1
+        new_chord.append(new_note)
+    #print(new_chord)
+    return new_chord
+
+def tri_wave(startX,startY,iterations,period,color,rot,duplicates,offset):
     tri_drawing = draw.Group(id='tri_wave')
-    amp = int(period//2)
-    x = [startX+x*period for x in range(int(iterations))]
-    y = [startY-amp,startY+amp]*int(iterations//2)
-    xy_flat = []
-    if rot == 90:
-        for x2,y2 in zip(y,x):
-            xy_flat.extend([x2,y2])
-    else:
-        for x2,y2 in zip(x,y):
-            xy_flat.extend([x2,y2])
-    new_line = draw.Lines(*xy_flat,stroke=color,stroke_width=stroke_small,fill='none')
-    
-    tri_drawing.append(new_line)
+    for v in range(duplicates):        
+        amp = int(period//2)
+        x = [startX+x*period for x in range(int(iterations))]
+        y = [v*offset+startY-amp,v*offset+startY+amp]*int(iterations//2)
+        xy_flat = []
+        if rot == 90:
+            for x2,y2 in zip(y,x):
+                xy_flat.extend([x2,y2])
+        else:
+            for x2,y2 in zip(x,y):
+                xy_flat.extend([x2,y2])
+        new_line = draw.Lines(*xy_flat,stroke=color,stroke_width=stroke_small,fill='none')
+        
+        tri_drawing.append(new_line)
+    render.append(tri_drawing)
+
+def tri_wave_chordal(startX,startY,iterations,period,color,rot,duplicates,offset):
+    tri_drawing = draw.Group(id='tri_wave')
+    c_ticker = 0
+    c_oct = 1
+    chordal_seq = [*chord_seq()]
+    for v in range(duplicates):
+
+        c_offset = (offset/4)*((c_oct*12)+chordal_seq[c_ticker])
+        
+        amp = int(period//2)
+        x = [startX+x*period for x in range(int(iterations))]
+        y = [c_offset+startY-amp,c_offset+startY+amp]*int(iterations//2)
+        xy_flat = []
+        
+        if rot == 90:
+            for x2,y2 in zip(y,x):
+                xy_flat.extend([x2,y2])
+        else:
+            for x2,y2 in zip(x,y):
+                xy_flat.extend([x2,y2])
+        new_line = draw.Lines(*xy_flat,stroke=color,stroke_width=stroke_small,fill='none')
+        
+        tri_drawing.append(new_line)
+        if c_ticker >= 4:
+            c_ticker = 0
+            c_oct += 1
+        else:
+            c_ticker+=1
+    render.append(tri_drawing)
+
+def tri_wave_fib(startX,startY,iterations,period,color,rot,duplicates,offset):
+    tri_drawing = draw.Group(id='tri_wave')
+    f_ticker = 0
+    fib_seq = [*fibonacci_list(duplicates)]
+    for v in range(duplicates):
+
+        f_offset = ((offset//2)*(fib_seq[f_ticker]))
+        
+        amp = int(period//2)
+        x = [startX+x*period for x in range(int(iterations))]
+        y = [f_offset+startY-amp,f_offset+startY+amp]*int(iterations//2)
+        xy_flat = []
+        
+        if rot == 90:
+            for x2,y2 in zip(y,x):
+                xy_flat.extend([x2,y2])
+        else:
+            for x2,y2 in zip(x,y):
+                xy_flat.extend([x2,y2])
+        new_line = draw.Lines(*xy_flat,stroke=color,stroke_width=stroke_small,fill='none')
+        f_ticker+=1
+        tri_drawing.append(new_line)
     render.append(tri_drawing)
     
 # ------------------
 
-d_width = 640 #Drawing space dimensions
+d_width = 320 #Drawing space dimensions
 d_height = d_width/2*3 
 
 #Establish some standard line widths
@@ -375,16 +470,20 @@ while True: #Second loop to actually execute
         mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
         mask1.append(drawing1)
         chordal_lines()
+        tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
         mondrian_straight(0,d_width,0,d_height,5,drawing2,
                           d_width/8*random.randint(3,5),
                           d_height/8*random.randint(3,5),color[2])
 
 
+        tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
         tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                 random.randint(5,8),d_avg/21,d_avg/13,color[1],90*random.randint(0,1))
-
-
+                 random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+        
         mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
+        fibonacci_segments(13)
         mondrian_straight(0,d_width,0,d_height,6,drawing4,
                           0,d_height/5*random.randint(0,5),color[4])
         
@@ -393,7 +492,7 @@ while True: #Second loop to actually execute
         
         
         
-        rect_percent_chance = 32
+        rect_percent_chance = 25
         rect_roll = random.randint(0,100)
         rect_coin_flip = random.randint(0,1)
         rect_fib = random.randint(3,6)
@@ -406,7 +505,7 @@ while True: #Second loop to actually execute
         draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),
                      d_avg/8,render,0.618)
 
-
+        
 
              
         
