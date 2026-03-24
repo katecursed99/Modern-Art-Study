@@ -16,6 +16,11 @@ def get_odds(num_id,odds_data): #Retrieves a percentage from the loaded odds tab
     for odds_dict in odds_data:
         if odds_dict["oid"] == num_id:
             return int(odds_dict["odds"])
+
+def get_setting(name,dataset): #Retrieves a percentage from the loaded odds table
+    for set_dict in dataset:
+        if set_dict["name"] == name:
+            return set_dict["value"]
     
 
 def RGB(r,g,b): #DrawSVG library likes strings for some reason, so here's a
@@ -379,7 +384,7 @@ d_avg = (d_height+d_width)/2 #average of height and width
 stroke_small = d_avg / 192
 stroke_large = d_avg / 128
 
-import_table('preset_table.json')
+preset_data = import_table('preset_table.json')
 
 seq_min=0
 seq_max=0
@@ -396,13 +401,13 @@ while True: #Take your anti-crash-out pills, Python
         if filename == 'q' or filename == 'Q': #Quick preset mode
 
             #Adjust the parameters
-            filename = 'n'
-            overwrite = 'n'
-            output_mode = 1
-            seed = 1
-            seq_min = 0
-            seq_max = 250
-            seq_step = 10
+            filename = get_setting("filename",preset_data)
+            overwrite = get_setting("overwrite",preset_data)
+            output_mode = int(get_setting("output_mode",preset_data))
+            seed = int(get_setting("seed",preset_data))
+            seq_min = int(get_setting("seq_min",preset_data))
+            seq_max = int(get_setting("seq_max",preset_data))
+            seq_step = int(get_setting("seq_step",preset_data))
 
             seq_max += seq_step
             quick_mode = True
@@ -431,8 +436,6 @@ while True: #Take your anti-crash-out pills, Python
 seq_iterator = seq_min
 
 odds_data = import_table('odds_table.json')
-for i in range(1,7):
-    print(get_odds(i,odds_data))
 
 while True: #Second loop to actually execute
     try:
@@ -546,7 +549,7 @@ while True: #Second loop to actually execute
             render.save_svg(filename+'.svg')
         elif overwrite == 'n':
             render.save_svg(filename+'_'+str(seed)+'.svg')
-        
+        print('Generated image #'+str(seed))
     
     except ValueError:
         print('girlie please i cannot paint with that')

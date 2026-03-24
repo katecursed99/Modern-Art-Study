@@ -13,13 +13,13 @@ odds_list = [
 
 #This is the default settings for running quick mode.
 preset_list = [
-    {"filename": "n"},
-    {"overwrite":"n"},
-    {"output_mode":"1"},
-    {"seed":"1"},
-    {"seq_min":"0"},
-    {"seq_max":"100"},
-    {"seq_step":"1"}
+    {"name":"filename", "value":"n"},
+    {"name":"overwrite", "value":"n"},
+    {"name":"output_mode", "value":"1"},
+    {"name":"seed", "value":"1"},
+    {"name":"seq_min", "value":"0"},
+    {"name":"seq_max", "value":"150"},
+    {"name":"seq_step", "value":"1"}
 ]
 
 

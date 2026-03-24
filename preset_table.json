@@ -1,23 +1,30 @@
 [
     {
-        "filename": "n"
+        "name": "filename",
+        "value": "n"
     },
     {
-        "overwrite": "n"
+        "name": "overwrite",
+        "value": "n"
     },
     {
-        "output_mode": "1"
+        "name": "output_mode",
+        "value": "1"
     },
     {
-        "seed": "1"
+        "name": "seed",
+        "value": "1"
     },
     {
-        "seq_min": "0"
+        "name": "seq_min",
+        "value": "0"
     },
     {
-        "seq_max": "100"
+        "name": "seq_max",
+        "value": "150"
     },
     {
-        "seq_step": "1"
+        "name": "seq_step",
+        "value": "1"
     }
 ]
