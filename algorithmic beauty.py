@@ -304,6 +304,12 @@ def chord_seq():
 
 def tri_wave(startX,startY,iterations,period,color,rot,duplicates,offset):
     tri_drawing = draw.Group(id='tri_wave')
+
+    if iterations % 2 == 0:
+        iterations+=1
+    if iterations == 2:
+        iterations += 2
+
     for v in range(duplicates):        
         amp = int(period//2)
         x = [startX+x*period for x in range(int(iterations))]
@@ -321,6 +327,11 @@ def tri_wave(startX,startY,iterations,period,color,rot,duplicates,offset):
     render.append(tri_drawing)
 
 def tri_wave_chordal(startX,startY,iterations,period,color,rot,duplicates,offset):
+    if iterations % 2 == 0:
+        iterations+=1
+    if iterations == 2:
+        iterations += 2
+
     tri_drawing = draw.Group(id='tri_wave')
     c_ticker = 0
     c_oct = 1
@@ -351,6 +362,11 @@ def tri_wave_chordal(startX,startY,iterations,period,color,rot,duplicates,offset
     render.append(tri_drawing)
 
 def tri_wave_fib(startX,startY,iterations,period,color,rot,duplicates,offset):
+    if iterations % 2 == 0:
+        iterations+=1
+    if iterations == 2:
+        iterations += 2
+
     tri_drawing = draw.Group(id='tri_wave')
     f_ticker = 0
     fib_seq = [*fibonacci_list(duplicates)]
