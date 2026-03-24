@@ -4,6 +4,7 @@
 import drawsvg as draw
 import math
 import random
+import json
 
 def RGB(r,g,b): #DrawSVG library likes strings for some reason, so here's a
                 #compatibility function that lets us do color math
