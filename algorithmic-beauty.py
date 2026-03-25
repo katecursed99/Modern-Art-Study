@@ -462,87 +462,31 @@ def save_input_preset(filename,overwrite,output_mode,seed,seq_min,seq_max,seq_st
             break
         except NameError:
             stop_asking = 'n'
-def is_in_mandelbrot_set(x,y,z_axis,w_axis,zoom):
-    c = complex(x/zoom, y/zoom)
-    color_ticker=0
-    z=complex(z_axis+w_axis)
-    #print(x,y)
-            
-    magnitude_z = (z.real**2+z.imag**2)**0.5
-    while abs(magnitude_z) < 2:
-                
-        color_ticker+=1
-        z = z**2+c
-        magnitude_z = (z.real**2+z.imag**2)**0.5
-        if color_ticker > 24:
-            return False
-            break
-    return True
 
-def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas):
+def mandelbrot_set(xpos,ypos,width,height,scale,z_axis,w_axis,zoom,canvas):
     frac_canv = draw.Group(id='fractal')
-    frac_canv2 = draw.Group(id='fractal2')
-    frac_tracer_list = []
-    frac_tracer_list = []
-    
-    for x in range(viewX-width//2,viewX+width//2,2):
-        for y in range(viewY-height//2,viewY+height//2,2):
+    for x in range(-width//2,width//2,2):
+        for y in range(-height//2,height//2,2):
             c = complex(x/zoom, y/zoom)
             color_ticker=0
             z=complex(z_axis+w_axis)
-
-            #print(x,y) #Sanity check
+            #print(x,y)
             
             magnitude_z = (z.real**2+z.imag**2)**0.5
-            while abs(magnitude_z) < 2:
+            while abs(magnitude_z) <= 2:
                 
                 color_ticker+=1
                 z = z**2+c
                 magnitude_z = (z.real**2+z.imag**2)**0.5
-                if color_ticker > 24:
+                if color_ticker > 6:
                     fill_color = 'white'
-
-
-                    #print(x,y) #Sanity check
-
-                    
-                    #Check all surrounding pixels to see if it's on the border
-                    buffer_check = []
-                    buffer_AND = True
-
-                    for x2 in range(-1,2):
-                        for y2 in range(-1,2):
-                            if is_in_mandelbrot_set(x+x2,y+y2,z_axis,w_axis,zoom):
-                                buffer_check.append(True)
-                            else:
-                                buffer_check.append(False)
-                    for buffer in buffer_check:
-                        if buffer == False:
-                            buffer_AND = False
-                    if buffer_AND == False:
-                        #print(x,y) #Sanity check
-                        frac_tracer_list.append(x)
-                        frac_tracer_list.append(y)
-                        
-                        
-                    
                     #print('nope')
                     break
                 fill_color = RGB(color_ticker*40,0,0)
-            
-            
-            #m_path = draw.Rectangle(x*scale+xpos+width//2,y*scale+ypos+height//2,2*scale,2*scale,fill=fill_color,stroke=fill_color,stroke_width=stroke_large)
-            #frac_canv.append(m_path)
-            #canvas.append(frac_canv)
-    
-    frac_tracer = draw.Lines(frac_tracer_list[0]*scale+xpos+width//2, frac_tracer_list[1]*scale+ypos+height//2,stroke='yellow',stroke_width=1,fill='none',closed='true')
-    for i in range(0,(len(frac_tracer_list)//2)+2,2):
-        #frac_canv2.append(draw.Circle(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2, 0.5, fill='yellow',stroke='yellow',stroke_width=stroke_large))
-        frac_canv2.append(frac_tracer.L(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2))
-        #print(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2)
-
-    canvas.append(frac_canv2)
-    
+                    
+            m_path = draw.Rectangle(x*scale+xpos+width//2,y*scale+ypos+height//2,2*scale,2*scale,fill=fill_color,stroke=fill_color,stroke_width=stroke_large)
+            frac_canv.append(m_path)
+            canvas.append(frac_canv)
 
 # ------------------
 
@@ -745,11 +689,11 @@ while True:
             print('.',end=' ')
 
 
-            frac_ex = int(input('Enter fractal zoom level'))
+            frac_ex = float(input('Enter fractal zoom level'))
             
-            mandelbrot_set(d_width/4,d_height/4,256,256,0,0,1,0,1,frac_ex,render)
+            mandelbrot_set(128,128,64,64,1,0,1,frac_ex,render)
             #For reference:
-            #mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas)
+            #mandelbrot_set(xpos,ypos,width,height,scale,z_axis,w_axis,zoom,canvas)
             
             print('.')
 

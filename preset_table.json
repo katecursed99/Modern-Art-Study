@@ -21,7 +21,7 @@
     },
     {
         "name": "seq_max",
-        "value": 5
+        "value": 1
     },
     {
         "name": "seq_step",
