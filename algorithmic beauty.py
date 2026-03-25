@@ -6,7 +6,17 @@ import math
 import random
 import json
 
-
+def title_block(): #Cute ASCII title card
+    print('\n')
+    print('   __  ___   __ _   ___  __      __    ')
+    print('  /__\/ __\ / /(_) / _ \/ _\ ___/ _\   ')
+    print(' /_\ / /   / / | |/ /_)/\ \ / _ \ \    ')
+    print('//__/ /___/ /__| / ___/ _\ \  __/\ \   ')
+    print('\__/\____/\____/_\/     \__/\___\__/   ')
+    print(' ~ ~ ~ a generative art piece ~ ~ ~    ')
+    print('by Katherina "Kate the Cursed" Jesek   ')
+    print('AlphaV0.02                    © 2026   ')
+    print('\n\n')
 def import_table(filename): #Handles loading the JSON file with the odds
     with open(filename, 'r') as odds_file:
         odds_data = json.load(odds_file)
@@ -83,7 +93,7 @@ def fibonacci_lines_vert(x1,x2,y1,y2,n,m,cnv): #left bound, right bound,
                     acc_next_line = acc_next_line_t
     return acc_next_line
 
-def fibonacci_lines_hor(x1,x2,y1,y2,n,m,cnv):
+def fibonacci_lines_hor(x1,x2,y1,y2,n,m,cnv): #
     acc_next_line = 0
     for i in range(n):
         if i >= 2:
@@ -160,6 +170,43 @@ def draw_circles(cx,cy,r,cnv,scale_fac):
     cnv.append(circ_1)
     circ_2 = draw.Circle(cx,cy,int(r*scale_fac//1),fill='none',stroke=color[1],stroke_width=stroke_large,transform='rotate('+str(random.randint(1,360))+'),translate('+str(cx//random.randint(8,12))+','+str(0)+')')
     cnv.append(circ_2)
+
+def draw_equi_tri(centerX,centerY,sideLength,color,rot,canvas):
+    triangle_group = draw.Group(transform='rotate('+str(rot)+')')
+    height = ((-(sideLength/2)**2+sideLength**2))**0.5
+    if rot >= 45:
+        centerY-=(d_avg)
+    elif rot <= -45:
+        centerY+=(d_avg)
+    triangle = draw.Lines(
+        centerX-int(sideLength//2),centerY+int(height//2),
+        centerX+int(sideLength//2),centerY+int(height//2),
+        centerX,centerY-int(height//2),
+        stroke=color,stroke_width=stroke_large,close='true'
+        )
+    triangle_group.append(triangle)
+    canvas.append(triangle_group)
+
+def draw_arrow(centerX,centerY,sideLength,tailLength,color,rot,canvas):
+    triangle_group = draw.Group(transform='rotate('+str(rot)+')')
+    height = ((-(sideLength/2)**2+sideLength**2))**0.5
+    if rot >= 45:
+        centerY-=(d_avg)
+    elif rot <= -45:
+        centerY+=(d_avg)
+    triangle = draw.Lines(
+        centerX-int(sideLength//2),centerY+int(height//2),
+        centerX,centerY+int(height//2),
+        centerX,centerY+int(tailLength),
+        centerX,centerY+int(height//2),
+        centerX+int(sideLength//2),centerY+int(height//2),
+        centerX,centerY-int(height//2),
+        stroke=color,stroke_width=stroke_large,close='true'
+        )
+    triangle_group.append(triangle)
+    canvas.append(triangle_group)
+    
+    
 
 def draw_rect(x,y,sizeX,sizeY,cnv,fill_pattern):
     rect = draw.Rectangle(x,y,sizeX,sizeY,fill=fill_pattern,stroke=color[1],stroke_width=stroke_small)
@@ -389,6 +436,32 @@ def tri_wave_fib(startX,startY,iterations,period,color,rot,duplicates,offset):
         f_ticker+=1
         tri_drawing.append(new_line)
     render.append(tri_drawing)
+
+
+def save_input_preset(filename,overwrite,output_mode,seed,seq_min,seq_max,seq_step):
+    global stop_asking
+    while True:
+        try:
+            if stop_asking != 'y' and stop_asking != 'Y':
+                save_mode = str(input('Save these settings as quick preset? y/n '))
+                if save_mode == 'y' or save_mode == 'Y':
+                    preset_list = [
+                        {"name":"filename", "value":filename},
+                        {"name":"overwrite", "value":overwrite},
+                        {"name":"output_mode", "value":output_mode},
+                        {"name":"seed", "value":seed},
+                        {"name":"seq_min", "value":seq_min},
+                        {"name":"seq_max", "value":seq_max-seq_step},
+                        {"name":"seq_step", "value":seq_step}
+                    ]
+
+                    with open("preset_table.json", "w") as file:
+                        json.dump(preset_list, file, indent=4)
+                else:
+                    stop_asking = str(input('Should I stop asking? y/n'))
+            break
+        except NameError:
+            stop_asking = 'n'
     
 # ------------------
 
@@ -400,174 +473,208 @@ d_avg = (d_height+d_width)/2 #average of height and width
 stroke_small = d_avg / 192
 stroke_large = d_avg / 128
 
-preset_data = import_table('preset_table.json')
+
 
 seq_min=0
 seq_max=0
 seq_step=0
 
-quick_mode=False
 
-while True: #Take your anti-crash-out pills, Python
-    try:
-        print('Tip: Enter Q as file name for quick preset mode')
-
-        filename = str(input('Enter a file name: (do not add extension) '))
-
-        if filename == 'q' or filename == 'Q': #Quick preset mode
-
-            #Adjust the parameters
-            filename = get_setting("filename",preset_data)
-            overwrite = get_setting("overwrite",preset_data)
-            output_mode = int(get_setting("output_mode",preset_data))
-            seed = int(get_setting("seed",preset_data))
-            seq_min = int(get_setting("seq_min",preset_data))
-            seq_max = int(get_setting("seq_max",preset_data))
-            seq_step = int(get_setting("seq_step",preset_data))
-
-            seq_max += seq_step
-            quick_mode = True
-
-            input('Quick mode selected: hit enter to run')
-            break
-
-        overwrite = str(input('Overwrite? y/n (y = overwrite, n = append) '))
-        output_mode = int(
-            input('Output mode? (0 is a single svg, 1 is a range of seeds) '))
-
-        if output_mode == 1:
-            seq_min = int(input('Sequence minimum '))
-            seq_max = int(input('Sequence maximum '))
-            seq_step = int(input('Increment size '))
-            
-            seq_max += seq_step #Makes the range inclusive
-
-            break
-        elif output_mode == 0:
-            break
-    except ValueError:
-        print('wtf')
+while True:
 
 
-seq_iterator = seq_min
-
-odds_data = import_table('odds_table.json')
-
-while True: #Second loop to actually execute
-    try:
-        
-        #Original mode, entering seeds one at a time
-        if output_mode == 0: 
-            if quick_mode == False:
-                seed = int(
-                    input('Enter the random seed (must be an integer):'))
-            else:
-                input('Quick mode: hit enter to run')
-
-        #Secondary mode, entering a range and getting a series
-        elif output_mode == 1: 
-            seed = seq_iterator
-            seq_iterator += seq_step
-
-            if seq_iterator > seq_max or seq_step == 0:
-                break
-        random.seed(seed)
-            
-        #Init a main "canvas"
-        render = draw.Drawing(d_width, d_height) 
-        #We're drawing to a secondary canvas or three so we can apply
-        #transformations before printing to the main canvas
-        drawing1 = draw.Group(id='canvas1')
-
-        mask1 = draw.Mask(maskContentUnits='objectBoundingBox')
-        
-        drawing2 = draw.Group(id='canvas2',mask=mask1)
-        drawing3 = draw.Group(id='canvas3')
-        drawing4 = draw.Group(id='canvas4')
-        color = ['black',RGB(255,255,255),
-                 RGB(0,0,0),RGB(200,25,25),
-                 RGB(100,100,100)]
-        rect_1 = draw.Rectangle(0,0,d_width,d_height,
-                                fill='black',stroke=color[1],
-                                stroke_width=stroke_large) #Black background
-        rect_2 = draw.Rectangle(0,0,d_width,d_height,
-                                stroke=color[1],
-                                stroke_width=stroke_large*2,
-                                fill='none') #White outline
-
-        
-
-
-
-        drawing1.append(rect_1)#Background square
-        render.append(rect_1)
-        
-                        
-        
-        #Drawing section
-        mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
-        mask1.append(drawing1)
-        chordal_lines()
-
-        if random.randint(0,100) <= get_odds(4,odds_data):
-            tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                     random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-
-
-        mondrian_straight(0,d_width,0,d_height,5,drawing2,
-                          d_width/8*random.randint(3,5),
-                          d_height/8*random.randint(3,5),color[2])
-
-        
-        if random.randint(0,100) <= get_odds(5,odds_data):
-        
-            tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                    random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-
-        if random.randint(0,100) <= get_odds(3,odds_data):
-            tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                     random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-        
-        mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
-        fibonacci_segments(13)
-        mondrian_straight(0,d_width,0,d_height,6,drawing4,
-                          0,d_height/5*random.randint(0,5),color[4])
-        
-        
-        
-        
-        
-        
-        rect_percent_chance = get_odds(6,odds_data)
-        rect_roll = random.randint(0,100)
-        rect_coin_flip = random.randint(0,1)
-        rect_fib = random.randint(3,6)
-        if rect_roll <= rect_percent_chance:
-            if rect_coin_flip == 0:
-                rect_sequence_vert(fibonacci(rect_fib),8)
-            else:
-                rect_sequence_hor(fibonacci(rect_fib),8)
-
-        draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),
-                     d_avg/8,render,0.618)
-
-        
-
-             
-        
-
-
-        #White border
-        render.append(rect_2)
-        
-        #Save the final canvas as an SVG file        
-        if overwrite == 'y':
-            render.save_svg(filename+'.svg')
-        elif overwrite == 'n':
-            render.save_svg(filename+'_'+str(seed)+'.svg')
-        print('Generated image #'+str(seed))
+    title_block()
     
-    except ValueError:
-        print('girlie please i cannot paint with that')
+    quick_mode=False
+    preset_data = import_table('preset_table.json')
+    while True: #Take your anti-crash-out pills, Python
+        try:
+            print('Tip: Enter Q as file name to run quick preset mode')
 
-print('Sequence finished, check the folder of the .py module~!')
+            filename = str(input('Enter a file name: (do not add extension) '))
+
+            if filename == 'q' or filename == 'Q': #Quick preset mode
+
+                #Adjust the parameters
+                filename = get_setting("filename",preset_data)
+                overwrite = get_setting("overwrite",preset_data)
+                output_mode = int(get_setting("output_mode",preset_data))
+                seed = int(get_setting("seed",preset_data))
+                seq_min = int(get_setting("seq_min",preset_data))
+                seq_max = int(get_setting("seq_max",preset_data))
+                seq_step = int(get_setting("seq_step",preset_data))
+
+                seq_max += seq_step
+                quick_mode = True
+
+                input('Quick mode selected: hit enter to run')
+                break
+
+            overwrite = str(input('Overwrite? y/n (y = overwrite, n = append) '))
+            output_mode = int(
+                input('Output mode? (0 is a single svg, 1 is a range of seeds) '))
+
+
+            if output_mode == 1:
+                seq_min = int(input('Sequence minimum '))
+                seq_max = int(input('Sequence maximum '))
+                seq_step = int(input('Increment size '))
+                
+                seq_max += seq_step #Makes the range inclusive
+                seed = seq_min
+                
+                save_input_preset(filename,overwrite,output_mode,seed,seq_min,seq_max,seq_step)
+                break
+            elif output_mode == 0:
+                
+                break
+        except ValueError:
+            print('wtf')
+
+
+    seq_iterator = seq_min
+
+    odds_data = import_table('odds_table.json')
+
+    while True: #Second loop to actually execute
+        try:
+            
+            #Original mode, entering seeds one at a time
+            if output_mode == 0: 
+                seed = int(
+                        input('Enter the random seed (must be an integer):'))
+                if quick_mode == True:
+                    save_input_preset(filename,overwrite,output_mode,seed,seq_min,seq_max,seq_step)
+
+            #Secondary mode, entering a range and getting a series
+            elif output_mode == 1: 
+                seed = seq_iterator
+                seq_iterator += seq_step
+
+                if seq_iterator > seq_max or seq_step == 0:
+                    break
+            random.seed(seed)
+                
+            #Init a main "canvas"
+            render = draw.Drawing(d_width, d_height) 
+
+            #We're drawing to a secondary canvas or three so we can apply
+            #transformations before printing to the main canvas
+            drawing1 = draw.Group(id='canvas1')
+
+            mask1 = draw.Mask(maskContentUnits='objectBoundingBox')
+            
+            drawing2 = draw.Group(id='canvas2',mask=mask1)
+            drawing3 = draw.Group(id='canvas3')
+            drawing4 = draw.Group(id='canvas4')
+            color = ['black',RGB(255,255,255),
+                     RGB(0,0,0),RGB(200,25,25),
+                     RGB(100,100,100)]
+            rect_1 = draw.Rectangle(0,0,d_width,d_height,
+                                    fill='black',stroke=color[1],
+                                    stroke_width=stroke_large) #Black background
+            rect_2 = draw.Rectangle(0,0,d_width,d_height,
+                                    stroke=color[1],
+                                    stroke_width=stroke_large*2,
+                                    fill='none') #White outline
+
+            
+
+
+
+            drawing1.append(rect_1)#Background square
+            render.append(rect_1)
+            
+                            
+            
+            #Drawing section
+            mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
+            mask1.append(drawing1)
+            chordal_lines()
+
+            if random.randint(0,100) <= get_odds(4,odds_data):
+                tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                         random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+
+
+            mondrian_straight(0,d_width,0,d_height,5,drawing2,
+                              d_width/8*random.randint(3,5),
+                              d_height/8*random.randint(3,5),color[2])
+
+            
+            if random.randint(0,100) <= get_odds(5,odds_data):
+            
+                tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                        random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+
+            if random.randint(0,100) <= get_odds(3,odds_data):
+                tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
+                         random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
+            
+            mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
+            fibonacci_segments(13)
+            mondrian_straight(0,d_width,0,d_height,6,drawing4,
+                              0,d_height/5*random.randint(0,5),color[4])
+            
+            
+            
+            
+            
+            
+            rect_percent_chance = get_odds(6,odds_data)
+            rect_roll = random.randint(0,100)
+            rect_coin_flip = random.randint(0,1)
+            rect_fib = random.randint(3,6)
+            if rect_roll <= rect_percent_chance:
+                if rect_coin_flip == 0:
+                    rect_sequence_vert(fibonacci(rect_fib),8)
+                else:
+                    rect_sequence_hor(fibonacci(rect_fib),8)
+
+            draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),
+                         d_avg/8,render,0.618)
+            
+            tri_percent_chance = get_odds(7,odds_data)
+            tri_roll = random.randint(0,100)
+            if tri_roll <= tri_percent_chance:
+                
+            
+                draw_equi_tri(
+                    d_width/8*random.randint(3,5),
+                    d_height/13*random.randint(5,8),
+                    d_avg/8,
+                    color[1],
+                    random.randint(-1,2)*45,
+                    render
+                    )
+            arr_percent_chance = get_odds(8,odds_data)
+            arr_roll = random.randint(0,100)
+            if arr_roll <= arr_percent_chance:
+
+                draw_arrow(
+                    d_width/8*random.randint(3,5),
+                    d_height/13*random.randint(5,8),
+                    d_avg/8,
+                    d_avg/4,
+                    color[1],
+                    random.randint(-1,2)*45,
+                    render
+                    )
+
+
+            #White border
+            render.append(rect_2)
+            
+            #Save the final canvas as an SVG file        
+            if overwrite == 'y':
+                render.save_svg(filename+'.svg')
+            elif overwrite == 'n':
+                render.save_svg(filename+'_'+str(seed)+'.svg')
+            print('Generated image #'+str(seed))
+        
+        except ValueError:
+            print('Back to main menu ->')
+            break
+
+    print('Check the folder of the .py module~!')
+    print('Restarting . . .')

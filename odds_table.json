@@ -28,5 +28,20 @@
         "oid": 6,
         "odds": "90",
         "name": "Gradient Rects"
+    },
+    {
+        "oid": 7,
+        "odds": "90",
+        "name": "Triangle"
+    },
+    {
+        "oid": 8,
+        "odds": "90",
+        "name": "Arrow"
+    },
+    {
+        "oid": 9,
+        "odds": "90",
+        "name": "Sine Wave"
     }
 ]
