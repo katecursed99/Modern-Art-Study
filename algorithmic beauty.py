@@ -462,7 +462,29 @@ def save_input_preset(filename,overwrite,output_mode,seed,seq_min,seq_max,seq_st
             break
         except NameError:
             stop_asking = 'n'
-    
+
+def mandelbrot_set(xpos,ypos,width,height,z_axis,w_axis,canvas):
+    frac_canv = draw.Group(id='fractal')
+    for x in range(-width//2,width//2,2):
+        for y in range(-height//2,height//2,2):
+            c = complex(x, y)
+            color_ticker=0
+            z=complex(z_axis+w_axis)
+            print(x,y)
+            while z.real+abs(z.imag) <= 10000000:
+                color_ticker+=1
+                z = z**2+c
+                
+                if color_ticker > 6:
+                    fill_color = 'white'
+                    print('nope')
+                    break
+                fill_color = RGB(color_ticker*40,0,color_ticker*40)
+                    
+            m_path = draw.Rectangle(x+xpos+width//2,y+ypos+height//2,2,2,fill=fill_color,stroke=fill_color,stroke_width=stroke_large)
+            frac_canv.append(m_path)
+            canvas.append(frac_canv)
+
 # ------------------
 
 d_width = 320 #Drawing space dimensions
@@ -661,6 +683,7 @@ while True:
                     render
                     )
 
+            mandelbrot_set(64,64,64,64,1,0,render)
 
             #White border
             render.append(rect_2)
