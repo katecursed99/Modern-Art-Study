@@ -1,3 +1,8 @@
+
+# Run from terminal in virtual environment for best results:
+# source Users/katherinajesek/Documents/GitHub/Modern-Art-Study/.venv/bin/activate
+# python -m idlelib.idle
+
 #pure plastic art
 #by Katherina "Kate the Cursed" Jesek
 
@@ -5,6 +10,7 @@ import drawsvg as draw
 import math
 import random
 import json
+import numpy as np
 
 def title_block(): #Cute ASCII title card
     print('\n')
@@ -536,11 +542,19 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
             #canvas.append(frac_canv)
     
     frac_tracer = draw.Lines(frac_tracer_list[0]*scale+xpos+width//2, frac_tracer_list[1]*scale+ypos+height//2,stroke='yellow',stroke_width=1,fill='none',closed='true')
+    point_list_x = []
+    point_list_y = []
+    projected_point_list = []
     for i in range(0,(len(frac_tracer_list)//2)+2,2):
         #frac_canv2.append(draw.Circle(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2, 0.5, fill='yellow',stroke='yellow',stroke_width=stroke_large))
-        frac_canv2.append(frac_tracer.L(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2))
+        frac_canv2.append(frac_tracer.T(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2))
         #print(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2)
-
+        point_list_x.append(frac_tracer_list[i]*scale+xpos+width//2)
+        point_list_y.append(frac_tracer_list[i+1]*scale+ypos+height//2)
+        current_point = (frac_tracer_list[i]*scale+xpos+width//2,frac_tracer_list[i+1]*scale+ypos+height//2)
+        projected_point_list.append(current_point)
+    array_data = np.array(projected_point_list)
+    print(array_data)
     canvas.append(frac_canv2)
     
 
