@@ -673,7 +673,7 @@ while True:
                 
                 break
         except ValueError:
-            print('wtf')
+            print('Something went wrong with the values entered! Try again please.')
 
 
     seq_iterator = seq_min
