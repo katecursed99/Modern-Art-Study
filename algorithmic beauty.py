@@ -523,7 +523,7 @@ def connect_dots(array_data):
     #print(converted)
     #print(flattened)
     return flattened
-
+    
 
 
 def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas):
@@ -578,9 +578,9 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
                 fill_color = RGB(color_ticker*40,0,0)
             
             
-            #m_path = draw.Rectangle(x*scale+xpos+width//2,y*scale+ypos+height//2,2*scale,2*scale,fill=fill_color,stroke=fill_color,stroke_width=stroke_large)
-            #frac_canv.append(m_path)
-            #canvas.append(frac_canv)
+            m_path = draw.Rectangle(x*scale+xpos+width//2,y*scale+ypos+height//2,2*scale,2*scale,fill=fill_color,stroke=fill_color,stroke_width=stroke_large)
+            frac_canv.append(m_path)
+            canvas.append(frac_canv)
     
     #frac_tracer = draw.Lines(frac_tracer_list[0]*scale+xpos+width//2, frac_tracer_list[1]*scale+ypos+height//2,stroke='yellow',stroke_width=1,fill='none',closed='true')
     point_list_x = []
@@ -605,8 +605,9 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
     list_data_new = connect_dots(array_data)
     frac_tracer_new = draw.Lines(list_data_new[0],list_data_new[1],stroke='blue',stroke_width=1,fill='none',closed='true')
     for i in range(0,(len(list_data_new)//2)+2,2):
-        frac_canv3.append(frac_tracer_new.L(list_data_new[i],list_data_new[i+1]))
-    canvas.append(frac_canv3)
+        pass
+    #    frac_canv3.append(frac_tracer_new.L(list_data_new[i],list_data_new[i+1]))
+    #canvas.append(frac_canv3)
 # ------------------
 
 d_width = 320 #Drawing space dimensions
@@ -735,7 +736,7 @@ while True:
 
             frac_ex = int(input('Enter fractal zoom level'))
             
-            mandelbrot_set(0,0,256,256,0,0,1,0,1,frac_ex,render)
+            mandelbrot_set(64,64,64,96,16,32,6,0,1,frac_ex,render)
             #For reference:
             #mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas)
             
