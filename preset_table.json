@@ -13,15 +13,15 @@
     },
     {
         "name": "seed",
-        "value": 1
+        "value": 0
     },
     {
         "name": "seq_min",
-        "value": 1
+        "value": 0
     },
     {
         "name": "seq_max",
-        "value": 13
+        "value": 200
     },
     {
         "name": "seq_step",
