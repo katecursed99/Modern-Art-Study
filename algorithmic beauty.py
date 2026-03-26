@@ -808,9 +808,9 @@ while True:
             print('.',end=' ')
 
 
-            frac_ex = int(input('Enter fractal zoom level'))
+            #frac_ex = int(input('Enter fractal zoom level'))
             
-            mandelbrot_set(d_width/4,d_height/4,256,256,0,0,1,0,1,frac_ex,render)
+            #mandelbrot_set(d_width/4,d_height/4,256,256,0,0,1,0,1,frac_ex,render)
             #For reference:
             #mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas)
             
