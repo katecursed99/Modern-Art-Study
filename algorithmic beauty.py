@@ -492,7 +492,7 @@ def connect_dots_inner(array_data,super_list):
     
     
     array_data_upd = np.delete(array_data, 0, axis=0)
-    distances = np.linalg.norm(array_data_upd**2 - last_point**2, axis=1)
+    distances = np.linalg.norm(array_data_upd - last_point, axis=1)
     sorted_indices = np.argsort(distances)
 
     
@@ -530,7 +530,6 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
     frac_canv = draw.Group(id='fractal')
     frac_canv2 = draw.Group(id='fractal2')
     frac_canv3 = draw.Group(id='fractal3')
-    frac_tracer_list = []
     frac_tracer_list = []
     
     for x in range(viewX-width//2,viewX+width//2,2):
@@ -583,13 +582,13 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
             #frac_canv.append(m_path)
             #canvas.append(frac_canv)
     
-    frac_tracer = draw.Lines(frac_tracer_list[0]*scale+xpos+width//2, frac_tracer_list[1]*scale+ypos+height//2,stroke='yellow',stroke_width=1,fill='none',closed='true')
+    #frac_tracer = draw.Lines(frac_tracer_list[0]*scale+xpos+width//2, frac_tracer_list[1]*scale+ypos+height//2,stroke='yellow',stroke_width=1,fill='none',closed='true')
     point_list_x = []
     point_list_y = []
     projected_point_list = []
     for i in range(0,(len(frac_tracer_list)//2)+2,2):
         #frac_canv2.append(draw.Circle(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2, 0.5, fill='yellow',stroke='yellow',stroke_width=stroke_large))
-        frac_canv2.append(frac_tracer.T(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2))
+        #frac_canv2.append(frac_tracer.T(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2))
         #print(frac_tracer_list[i]*scale+xpos+width//2, frac_tracer_list[i+1]*scale+ypos+height//2)
         point_list_x.append(frac_tracer_list[i]*scale+xpos+width//2)
         point_list_y.append(frac_tracer_list[i+1]*scale+ypos+height//2)
