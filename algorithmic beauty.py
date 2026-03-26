@@ -605,7 +605,7 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
     list_data_new = connect_dots(array_data)
     frac_tracer_new = draw.Lines(list_data_new[0],list_data_new[1],stroke='blue',stroke_width=1,fill='none',closed='true')
     for i in range(0,(len(list_data_new)//2)+2,2):
-        frac_canv3.append(frac_tracer_new.T(list_data_new[i],list_data_new[i+1]))
+        frac_canv3.append(frac_tracer_new.L(list_data_new[i],list_data_new[i+1]))
     canvas.append(frac_canv3)
 # ------------------
 
@@ -728,89 +728,14 @@ while True:
 
             drawing1.append(rect_1)#Background square
             render.append(rect_1)
-            
-                            
-            
-            #Drawing section
-            mondrian_angled(0,d_width,0,d_height,4,drawing1,color[3])
-            mask1.append(drawing1)
-            chordal_lines()
 
-            if random.randint(0,100) <= get_odds(4,odds_data):
-                tri_wave_fib(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                         random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-
-
-            mondrian_straight(0,d_width,0,d_height,5,drawing2,
-                              d_width/8*random.randint(3,5),
-                              d_height/8*random.randint(3,5),color[2])
-
-            
-            if random.randint(0,100) <= get_odds(5,odds_data):
-            
-                tri_wave_chordal(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                        random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-
-            if random.randint(0,100) <= get_odds(3,odds_data):
-                tri_wave(d_avg/13*random.randint(1,8),d_avg/13*random.randint(1,8),
-                         random.randint(5,8),d_avg/21,color[1],90*random.randint(0,1),21,d_avg/55)
-            
-            mondrian_angled(0,d_width,0,d_height,4,drawing3,color[2])
-            fibonacci_segments(13)
-            mondrian_straight(0,d_width,0,d_height,6,drawing4,
-                              0,d_height/5*random.randint(0,5),color[4])
-            
-            print('.',end=' ')
-            
-            
-            
-            
-            rect_percent_chance = get_odds(6,odds_data)
-            rect_roll = random.randint(0,100)
-            rect_coin_flip = random.randint(0,1)
-            rect_fib = random.randint(3,6)
-            if rect_roll <= rect_percent_chance:
-                if rect_coin_flip == 0:
-                    rect_sequence_vert(fibonacci(rect_fib),8)
-                else:
-                    rect_sequence_hor(fibonacci(rect_fib),8)
-
-            draw_circles(d_width/8*random.randint(3,5),d_height/13*random.randint(5,8),
-                         d_avg/8,render,0.618)
-            
-            tri_percent_chance = get_odds(7,odds_data)
-            tri_roll = random.randint(0,100)
-            if tri_roll <= tri_percent_chance:
-                
-            
-                draw_equi_tri(
-                    d_width/8*random.randint(3,5),
-                    d_height/13*random.randint(5,8),
-                    d_avg/8,
-                    color[1],
-                    random.randint(-1,2)*45,
-                    render
-                    )
-            arr_percent_chance = get_odds(8,odds_data)
-            arr_roll = random.randint(0,100)
-            if arr_roll <= arr_percent_chance:
-
-                draw_arrow(
-                    d_width/8*random.randint(3,5),
-                    d_height/13*random.randint(5,8),
-                    d_avg/8,
-                    d_avg/4,
-                    color[1],
-                    random.randint(-1,2)*45,
-                    render
-                    )
 
             print('.',end=' ')
 
 
             frac_ex = int(input('Enter fractal zoom level'))
             
-            mandelbrot_set(d_width/4,d_height/4,256,256,0,0,1,0,1,frac_ex,render)
+            mandelbrot_set(0,0,256,256,0,0,1,0,1,frac_ex,render)
             #For reference:
             #mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas)
             
