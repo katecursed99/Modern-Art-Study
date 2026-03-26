@@ -11,6 +11,7 @@ import math
 import random
 import json
 import numpy as np
+from scipy.spatial.distance import pdist
 
 def title_block(): #Cute ASCII title card
     print('\n')
@@ -485,9 +486,50 @@ def is_in_mandelbrot_set(x,y,z_axis,w_axis,zoom):
             break
     return True
 
+def connect_dots_inner(array_data,super_list):
+    
+    last_point = array_data[0] 
+    
+    
+    array_data_upd = np.delete(array_data, 0, axis=0)
+    distances = np.linalg.norm(array_data_upd**2 - last_point**2, axis=1)
+    sorted_indices = np.argsort(distances)
+
+    
+    sorted_points = array_data_upd[sorted_indices]
+    
+    sorted_distances = distances[sorted_indices]
+
+    for dist in range(0,len(sorted_distances),1):
+        if sorted_distances[dist] < sorted_distances[dist-1] and dist!= 0:
+            
+
+            break
+    
+    return sorted_points,array_data[0]
+
+def connect_dots(array_data):
+    sorted_points = []
+    while len(array_data) > 1:
+        array_data,super_data = connect_dots_inner(array_data,sorted_points)
+        #print(array_data)
+        sorted_points.append(tuple(super_data))
+        
+    #print('super list'+str(sorted_points))
+    converted = [(int(a), int(b)) for a, b in sorted_points]
+    flattened=[]
+    for a, b in converted:
+        flattened.extend([a,b])
+    #print(converted)
+    #print(flattened)
+    return flattened
+
+
+
 def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,canvas):
     frac_canv = draw.Group(id='fractal')
     frac_canv2 = draw.Group(id='fractal2')
+    frac_canv3 = draw.Group(id='fractal3')
     frac_tracer_list = []
     frac_tracer_list = []
     
@@ -554,10 +596,18 @@ def mandelbrot_set(xpos,ypos,width,height,viewX,viewY,scale,z_axis,w_axis,zoom,c
         current_point = (frac_tracer_list[i]*scale+xpos+width//2,frac_tracer_list[i+1]*scale+ypos+height//2)
         projected_point_list.append(current_point)
     array_data = np.array(projected_point_list)
-    print(array_data)
-    canvas.append(frac_canv2)
-    
 
+    #print(len(array_data))
+    last_point = array_data[-1] 
+    
+    #print(array_data)
+    canvas.append(frac_canv2)
+
+    list_data_new = connect_dots(array_data)
+    frac_tracer_new = draw.Lines(list_data_new[0],list_data_new[1],stroke='blue',stroke_width=1,fill='none',closed='true')
+    for i in range(0,(len(list_data_new)//2)+2,2):
+        frac_canv3.append(frac_tracer_new.T(list_data_new[i],list_data_new[i+1]))
+    canvas.append(frac_canv3)
 # ------------------
 
 d_width = 320 #Drawing space dimensions
